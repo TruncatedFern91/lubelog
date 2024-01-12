@@ -1,4 +1,5 @@
-﻿using CarCareTracker.Helper;
+﻿using CarCareTracker.External.Interfaces;
+using CarCareTracker.Helper;
 using CarCareTracker.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
@@ -14,15 +15,18 @@ namespace CarCareTracker.Controllers
     {
         private IDataProtector _dataProtector;
         private ILoginHelper _loginHelper;
+        private IUserRecordDataAccess _userRecordDataAccess;
         private readonly ILogger<LoginController> _logger;
         public LoginController(
             ILogger<LoginController> logger,
             IDataProtectionProvider securityProvider,
-            ILoginHelper loginHelper
+            ILoginHelper loginHelper,
+            IUserRecordDataAccess userRecordDataAccess
             ) 
         {
             _dataProtector = securityProvider.CreateProtector("login");
             _logger = logger;
+            _userRecordDataAccess = userRecordDataAccess;
             _loginHelper = loginHelper;
         }
         public IActionResult Index()
@@ -119,6 +123,25 @@ namespace CarCareTracker.Controllers
         {
             Response.Cookies.Delete("ACCESS_TOKEN");
             return Json(true);
+        }
+        [Authorize(Roles = nameof(UserModel.IsRootUser))]
+        [HttpGet]
+        public IActionResult GetUsers()
+        {
+            var result = _userRecordDataAccess.GetUsers();
+            return PartialView("_Users", result);
+        }
+        [Authorize(Roles = nameof(UserModel.IsRootUser))]
+        [HttpPost]
+        public IActionResult CreateUser(LoginModel credentials)
+        {
+            if (string.IsNullOrWhiteSpace(credentials.UserName) || string.IsNullOrWhiteSpace(credentials.Password))
+            {
+                return Json(false);
+            }
+            var hashedPassword = Sha256_hash(credentials.Password);
+            var result = _userRecordDataAccess.SaveUserRecord(new UserModel() { UserName = credentials.UserName, Password = hashedPassword, IsActive = true });
+            return Json(result);
         }
         private static string Sha256_hash(string value)
         {

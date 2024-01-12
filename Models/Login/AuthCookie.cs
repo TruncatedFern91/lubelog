@@ -2,7 +2,7 @@
 {
     public class AuthCookie
     {
-        public User UserData { get; set; }
+        public UserModel UserData { get; set; }
         public DateTime ExpiresOn { get; set; }
     }
 }

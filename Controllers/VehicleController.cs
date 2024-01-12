@@ -69,20 +69,20 @@ namespace CarCareTracker.Controllers
             var data = _dataAccess.GetVehicleById(vehicleId);
             return View(data);
         }
-        [Authorize(Roles = nameof(Models.User.CanAdd))]
+        [Authorize(Roles = nameof(UserModel.CanAdd))]
         [HttpGet]
         public IActionResult AddVehiclePartialView()
         {
             return PartialView("_VehicleModal", new Vehicle());
         }
-        [Authorize(Roles = nameof(Models.User.CanEdit))]
+        [Authorize(Roles = nameof(UserModel.CanEdit))]
         [HttpGet]
         public IActionResult GetEditVehiclePartialViewById(int vehicleId)
         {
             var data = _dataAccess.GetVehicleById(vehicleId);
             return PartialView("_VehicleModal", data);
         }
-        [Authorize(Roles = $"{nameof(Models.User.CanAdd)},{nameof(Models.User.CanEdit)}")]
+        [Authorize(Roles = $"{nameof(UserModel.CanAdd)},{nameof(UserModel.CanEdit)}")]
         [HttpPost]
         public IActionResult SaveVehicle(Vehicle vehicleInput)
         {
@@ -100,7 +100,7 @@ namespace CarCareTracker.Controllers
                 return Json(false);
             }
         }
-        [Authorize(Roles = nameof(Models.User.CanDelete))]
+        [Authorize(Roles = nameof(UserModel.CanDelete))]
         [HttpPost]
         public IActionResult DeleteVehicle(int vehicleId)
         {
@@ -116,7 +116,7 @@ namespace CarCareTracker.Controllers
             return Json(result);
         }
         #region "Bulk Imports"
-        [Authorize(Roles = nameof(Models.User.CanAdd))]
+        [Authorize(Roles = nameof(UserModel.CanAdd))]
         [HttpGet]
         public IActionResult GetBulkImportModalPartialView(ImportMode mode)
         {
@@ -226,7 +226,7 @@ namespace CarCareTracker.Controllers
             }
             return Json(false);
         }
-        [Authorize(Roles = nameof(Models.User.CanAdd))]
+        [Authorize(Roles = nameof(UserModel.CanAdd))]
         [HttpPost]
         public IActionResult ImportToVehicleIdFromCsv(int vehicleId, ImportMode mode, string fileName)
         {
@@ -384,7 +384,7 @@ namespace CarCareTracker.Controllers
             };
             return PartialView("_Gas", viewModel);
         }
-        [Authorize(Roles = $"{nameof(Models.User.CanAdd)},{nameof(Models.User.CanEdit)}")]
+        [Authorize(Roles = $"{nameof(UserModel.CanAdd)},{nameof(UserModel.CanEdit)}")]
         [HttpPost]
         public IActionResult SaveGasRecordToVehicleId(GasRecordInput gasRecord)
         {
@@ -392,13 +392,13 @@ namespace CarCareTracker.Controllers
             var result = _gasRecordDataAccess.SaveGasRecordToVehicle(gasRecord.ToGasRecord());
             return Json(result);
         }
-        [Authorize(Roles = nameof(Models.User.CanAdd))]
+        [Authorize(Roles = nameof(UserModel.CanAdd))]
         [HttpGet]
         public IActionResult GetAddGasRecordPartialView()
         {
             return PartialView("_GasModal", new GasRecordInputContainer() { GasRecord = new GasRecordInput() });
         }
-        [Authorize(Roles = nameof(Models.User.CanEdit))]
+        [Authorize(Roles = nameof(UserModel.CanEdit))]
         [HttpGet]
         public IActionResult GetGasRecordForEditById(int gasRecordId)
         {
@@ -423,7 +423,7 @@ namespace CarCareTracker.Controllers
             };
             return PartialView("_GasModal", viewModel);
         }
-        [Authorize(Roles = nameof(Models.User.CanDelete))]
+        [Authorize(Roles = nameof(UserModel.CanDelete))]
         [HttpPost]
         public IActionResult DeleteGasRecordById(int gasRecordId)
         {
@@ -446,7 +446,7 @@ namespace CarCareTracker.Controllers
             }
             return PartialView("_ServiceRecords", result);
         }
-        [Authorize(Roles = $"{nameof(Models.User.CanAdd)},{nameof(Models.User.CanEdit)}")]
+        [Authorize(Roles = $"{nameof(UserModel.CanAdd)},{nameof(UserModel.CanEdit)}")]
         [HttpPost]
         public IActionResult SaveServiceRecordToVehicleId(ServiceRecordInput serviceRecord)
         {
@@ -455,13 +455,13 @@ namespace CarCareTracker.Controllers
             var result = _serviceRecordDataAccess.SaveServiceRecordToVehicle(serviceRecord.ToServiceRecord());
             return Json(result);
         }
-        [Authorize(Roles = nameof(Models.User.CanAdd))]
+        [Authorize(Roles = nameof(UserModel.CanAdd))]
         [HttpGet]
         public IActionResult GetAddServiceRecordPartialView()
         {
             return PartialView("_ServiceRecordModal", new ServiceRecordInput());
         }
-        [Authorize(Roles = nameof(Models.User.CanEdit))]
+        [Authorize(Roles = nameof(UserModel.CanEdit))]
         [HttpGet]
         public IActionResult GetServiceRecordForEditById(int serviceRecordId)
         {
@@ -480,7 +480,7 @@ namespace CarCareTracker.Controllers
             };
             return PartialView("_ServiceRecordModal", convertedResult);
         }
-        [Authorize(Roles = nameof(Models.User.CanDelete))]
+        [Authorize(Roles = nameof(UserModel.CanDelete))]
         [HttpPost]
         public IActionResult DeleteServiceRecordById(int serviceRecordId)
         {
@@ -503,7 +503,7 @@ namespace CarCareTracker.Controllers
             }
             return PartialView("_CollisionRecords", result);
         }
-        [Authorize(Roles = $"{nameof(Models.User.CanAdd)},{nameof(Models.User.CanEdit)}")]
+        [Authorize(Roles = $"{nameof(UserModel.CanAdd)},{nameof(UserModel.CanEdit)}")]
         [HttpPost]
         public IActionResult SaveCollisionRecordToVehicleId(CollisionRecordInput collisionRecord)
         {
@@ -512,13 +512,13 @@ namespace CarCareTracker.Controllers
             var result = _collisionRecordDataAccess.SaveCollisionRecordToVehicle(collisionRecord.ToCollisionRecord());
             return Json(result);
         }
-        [Authorize(Roles = nameof(Models.User.CanAdd))]
+        [Authorize(Roles = nameof(UserModel.CanAdd))]
         [HttpGet]
         public IActionResult GetAddCollisionRecordPartialView()
         {
             return PartialView("_CollisionRecordModal", new CollisionRecordInput());
         }
-        [Authorize(Roles = nameof(Models.User.CanEdit))]
+        [Authorize(Roles = nameof(UserModel.CanEdit))]
         [HttpGet]
         public IActionResult GetCollisionRecordForEditById(int collisionRecordId)
         {
@@ -537,7 +537,7 @@ namespace CarCareTracker.Controllers
             };
             return PartialView("_CollisionRecordModal", convertedResult);
         }
-        [Authorize(Roles = nameof(Models.User.CanDelete))]
+        [Authorize(Roles = nameof(UserModel.CanDelete))]
         [HttpPost]
         public IActionResult DeleteCollisionRecordById(int collisionRecordId)
         {
@@ -560,7 +560,7 @@ namespace CarCareTracker.Controllers
             }
             return PartialView("_TaxRecords", result);
         }
-        [Authorize(Roles = $"{nameof(Models.User.CanAdd)},{nameof(Models.User.CanEdit)}")]
+        [Authorize(Roles = $"{nameof(UserModel.CanAdd)},{nameof(UserModel.CanEdit)}")]
         [HttpPost]
         public IActionResult SaveTaxRecordToVehicleId(TaxRecordInput taxRecord)
         {
@@ -569,13 +569,13 @@ namespace CarCareTracker.Controllers
             var result = _taxRecordDataAccess.SaveTaxRecordToVehicle(taxRecord.ToTaxRecord());
             return Json(result);
         }
-        [Authorize(Roles = nameof(Models.User.CanAdd))]
+        [Authorize(Roles = nameof(UserModel.CanAdd))]
         [HttpGet]
         public IActionResult GetAddTaxRecordPartialView()
         {
             return PartialView("_TaxRecordModal", new TaxRecordInput());
         }
-        [Authorize(Roles = nameof(Models.User.CanEdit))]
+        [Authorize(Roles = nameof(UserModel.CanEdit))]
         [HttpGet]
         public IActionResult GetTaxRecordForEditById(int taxRecordId)
         {
@@ -593,7 +593,7 @@ namespace CarCareTracker.Controllers
             };
             return PartialView("_TaxRecordModal", convertedResult);
         }
-        [Authorize(Roles = nameof(Models.User.CanDelete))]
+        [Authorize(Roles = nameof(UserModel.CanDelete))]
         [HttpPost]
         public IActionResult DeleteTaxRecordById(int taxRecordId)
         {
@@ -794,14 +794,14 @@ namespace CarCareTracker.Controllers
             result = result.OrderByDescending(x => x.Urgency).ToList();
             return PartialView("_ReminderRecords", result);
         }
-        [Authorize(Roles = $"{nameof(Models.User.CanAdd)},{nameof(Models.User.CanEdit)}")]
+        [Authorize(Roles = $"{nameof(UserModel.CanAdd)},{nameof(UserModel.CanEdit)}")]
         [HttpPost]
         public IActionResult SaveReminderRecordToVehicleId(ReminderRecordInput reminderRecord)
         {
             var result = _reminderRecordDataAccess.SaveReminderRecordToVehicle(reminderRecord.ToReminderRecord());
             return Json(result);
         }
-        [Authorize(Roles = nameof(Models.User.CanAdd))]
+        [Authorize(Roles = nameof(UserModel.CanAdd))]
         [HttpPost]
         public IActionResult GetAddReminderRecordPartialView(ReminderRecordInput? reminderModel)
         {
@@ -814,7 +814,7 @@ namespace CarCareTracker.Controllers
                 return PartialView("_ReminderRecordModal", new ReminderRecordInput());
             }
         }
-        [Authorize(Roles = nameof(Models.User.CanEdit))]
+        [Authorize(Roles = nameof(UserModel.CanEdit))]
         [HttpGet]
         public IActionResult GetReminderRecordForEditById(int reminderRecordId)
         {
@@ -832,7 +832,7 @@ namespace CarCareTracker.Controllers
             };
             return PartialView("_ReminderRecordModal", convertedResult);
         }
-        [Authorize(Roles = nameof(Models.User.CanDelete))]
+        [Authorize(Roles = nameof(UserModel.CanDelete))]
         [HttpPost]
         public IActionResult DeleteReminderRecordById(int reminderRecordId)
         {
@@ -855,7 +855,7 @@ namespace CarCareTracker.Controllers
             }
             return PartialView("_UpgradeRecords", result);
         }
-        [Authorize(Roles = $"{nameof(Models.User.CanAdd)},{nameof(Models.User.CanEdit)}")]
+        [Authorize(Roles = $"{nameof(UserModel.CanAdd)},{nameof(UserModel.CanEdit)}")]
         [HttpPost]
         public IActionResult SaveUpgradeRecordToVehicleId(UpgradeRecordInput upgradeRecord)
         {
@@ -864,13 +864,13 @@ namespace CarCareTracker.Controllers
             var result = _upgradeRecordDataAccess.SaveUpgradeRecordToVehicle(upgradeRecord.ToUpgradeRecord());
             return Json(result);
         }
-        [Authorize(Roles = nameof(Models.User.CanAdd))]
+        [Authorize(Roles = nameof(UserModel.CanAdd))]
         [HttpGet]
         public IActionResult GetAddUpgradeRecordPartialView()
         {
             return PartialView("_UpgradeRecordModal", new UpgradeRecordInput());
         }
-        [Authorize(Roles = nameof(Models.User.CanEdit))]
+        [Authorize(Roles = nameof(UserModel.CanEdit))]
         [HttpGet]
         public IActionResult GetUpgradeRecordForEditById(int upgradeRecordId)
         {
@@ -889,7 +889,7 @@ namespace CarCareTracker.Controllers
             };
             return PartialView("_UpgradeRecordModal", convertedResult);
         }
-        [Authorize(Roles = nameof(Models.User.CanDelete))]
+        [Authorize(Roles = nameof(UserModel.CanDelete))]
         [HttpPost]
         public IActionResult DeleteUpgradeRecordById(int upgradeRecordId)
         {
@@ -904,27 +904,27 @@ namespace CarCareTracker.Controllers
             var result = _noteDataAccess.GetNotesByVehicleId(vehicleId);
             return PartialView("_Notes", result);
         }
-        [Authorize(Roles = $"{nameof(Models.User.CanAdd)},{nameof(Models.User.CanEdit)}")]
+        [Authorize(Roles = $"{nameof(UserModel.CanAdd)},{nameof(UserModel.CanEdit)}")]
         [HttpPost]
         public IActionResult SaveNoteToVehicleId(Note note)
         {
             var result = _noteDataAccess.SaveNoteToVehicle(note);
             return Json(result);
         }
-        [Authorize(Roles = nameof(Models.User.CanAdd))]
+        [Authorize(Roles = nameof(UserModel.CanAdd))]
         [HttpGet]
         public IActionResult GetAddNotePartialView()
         {
             return PartialView("_NoteModal", new Note());
         }
-        [Authorize(Roles = nameof(Models.User.CanEdit))]
+        [Authorize(Roles = nameof(UserModel.CanEdit))]
         [HttpGet]
         public IActionResult GetNoteForEditById(int noteId)
         {
             var result = _noteDataAccess.GetNoteById(noteId);
             return PartialView("_NoteModal", result);
         }
-        [Authorize(Roles = nameof(Models.User.CanDelete))]
+        [Authorize(Roles = nameof(UserModel.CanDelete))]
         [HttpPost]
         public IActionResult DeleteNoteById(int noteId)
         {

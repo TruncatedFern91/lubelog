@@ -8,7 +8,7 @@ namespace CarCareTracker.Helper
 {
     public interface ILoginHelper
     {
-        User ValidateUserCredentials(LoginModel credentials);
+        UserModel ValidateUserCredentials(LoginModel credentials);
     }
     public class LoginHelper: ILoginHelper
     {
@@ -17,7 +17,7 @@ namespace CarCareTracker.Helper
         {
             _userRecordDataAccess = userRecordDataAccess;
         }
-        public User ValidateUserCredentials(LoginModel credentials)
+        public UserModel ValidateUserCredentials(LoginModel credentials)
         {
             var configFileContents = System.IO.File.ReadAllText(StaticHelper.UserConfigPath);
             var existingUserConfig = System.Text.Json.JsonSerializer.Deserialize<UserConfig>(configFileContents);
@@ -30,7 +30,7 @@ namespace CarCareTracker.Helper
                 if (hashedUserName == existingUserConfig.UserNameHash &&
                     hashedPassword == existingUserConfig.UserPasswordHash)
                 {
-                    return new User()
+                    return new UserModel()
                     {
                         Id = -1, //negative one for root user.
                         UserName = credentials.UserName,
@@ -48,7 +48,7 @@ namespace CarCareTracker.Helper
                     }
                 }
             }
-            return new User();
+            return new UserModel();
         }
         private static string Sha256_hash(string value)
         {

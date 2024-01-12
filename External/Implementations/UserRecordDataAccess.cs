@@ -9,29 +9,37 @@ namespace CarCareTracker.External.Implementations
     {
         private static string dbName = StaticHelper.DbName;
         private static string tableName = "userrecords";
-        public User GetUserRecordByUserName(string userName)
+        public List<UserModel> GetUsers()
         {
             using (var db = new LiteDatabase(dbName))
             {
-                var table = db.GetCollection<User>(tableName);
-                var userRecord = table.FindOne(Query.EQ(nameof(User.UserName), userName));
-                return userRecord ?? new User();
+                var table = db.GetCollection<UserModel>(tableName);
+                return table.FindAll().ToList();
             };
         }
-        public User GetUserRecordById(int userId)
+        public UserModel GetUserRecordByUserName(string userName)
         {
             using (var db = new LiteDatabase(dbName))
             {
-                var table = db.GetCollection<User>(tableName);
+                var table = db.GetCollection<UserModel>(tableName);
+                var userRecord = table.FindOne(Query.EQ(nameof(UserModel.UserName), userName));
+                return userRecord ?? new UserModel();
+            };
+        }
+        public UserModel GetUserRecordById(int userId)
+        {
+            using (var db = new LiteDatabase(dbName))
+            {
+                var table = db.GetCollection<UserModel>(tableName);
                 var userRecord = table.FindById(userId);
-                return userRecord ?? new User();
+                return userRecord ?? new UserModel();
             };
         }
-        public bool SaveUserRecord(User userRecord)
+        public bool SaveUserRecord(UserModel userRecord)
         {
             using (var db = new LiteDatabase(dbName))
             {
-                var table = db.GetCollection<User>(tableName);
+                var table = db.GetCollection<UserModel>(tableName);
                 table.Upsert(userRecord);
                 return true;
             };
@@ -40,7 +48,7 @@ namespace CarCareTracker.External.Implementations
         {
             using (var db = new LiteDatabase(dbName))
             {
-                var table = db.GetCollection<User>(tableName);
+                var table = db.GetCollection<UserModel>(tableName);
                 table.Delete(userId);
                 return true;
             };

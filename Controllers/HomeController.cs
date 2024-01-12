@@ -37,7 +37,7 @@ namespace CarCareTracker.Controllers
             var vehiclesStored = _dataAccess.GetVehicles();
             return PartialView("_GarageDisplay", vehiclesStored);
         }
-        [Authorize(Roles = nameof(Models.User.IsRootUser))]
+        [Authorize(Roles = nameof(UserModel.IsRootUser))]
         public IActionResult Settings()
         {
             var userConfig = new UserConfig
@@ -52,7 +52,7 @@ namespace CarCareTracker.Controllers
             };
             return PartialView("_Settings", userConfig);
         }
-        [Authorize(Roles = nameof(Models.User.IsRootUser))]
+        [Authorize(Roles = nameof(UserModel.IsRootUser))]
         [HttpPost]
         public IActionResult WriteToSettings(UserConfig userConfig)
         {
