@@ -17,6 +17,7 @@ builder.Services.AddSingleton<ICollisionRecordDataAccess, CollisionRecordDataAcc
 builder.Services.AddSingleton<ITaxRecordDataAccess, TaxRecordDataAccess>();
 builder.Services.AddSingleton<IReminderRecordDataAccess, ReminderRecordDataAccess>();
 builder.Services.AddSingleton<IUpgradeRecordDataAccess, UpgradeRecordDataAccess>();
+builder.Services.AddSingleton<IUserRecordDataAccess, UserRecordDataAccess>();
 
 //configure helpers
 builder.Services.AddSingleton<IFileHelper, FileHelper>();

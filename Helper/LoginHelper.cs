@@ -1,4 +1,6 @@
-﻿using CarCareTracker.Models;
+﻿using CarCareTracker.External.Interfaces;
+using CarCareTracker.Models;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -6,11 +8,16 @@ namespace CarCareTracker.Helper
 {
     public interface ILoginHelper
     {
-        bool ValidateUserCredentials(LoginModel credentials);
+        User ValidateUserCredentials(LoginModel credentials);
     }
     public class LoginHelper: ILoginHelper
     {
-        public bool ValidateUserCredentials(LoginModel credentials)
+        private IUserRecordDataAccess _userRecordDataAccess;
+        public LoginHelper(IUserRecordDataAccess userRecordDataAccess)
+        {
+            _userRecordDataAccess = userRecordDataAccess;
+        }
+        public User ValidateUserCredentials(LoginModel credentials)
         {
             var configFileContents = System.IO.File.ReadAllText(StaticHelper.UserConfigPath);
             var existingUserConfig = System.Text.Json.JsonSerializer.Deserialize<UserConfig>(configFileContents);
@@ -23,10 +30,25 @@ namespace CarCareTracker.Helper
                 if (hashedUserName == existingUserConfig.UserNameHash &&
                     hashedPassword == existingUserConfig.UserPasswordHash)
                 {
-                    return true;
+                    return new User()
+                    {
+                        Id = -1, //negative one for root user.
+                        UserName = credentials.UserName,
+                        IsRootUser = true,
+                        CanAdd = true,
+                        CanEdit = true,
+                        CanDelete = true
+                    };
+                } else //authenticate via DB, not a root user.
+                {
+                    var userToVerifyAgainst = _userRecordDataAccess.GetUserRecordByUserName(credentials.UserName);
+                    if (hashedPassword == userToVerifyAgainst.Password && userToVerifyAgainst.IsActive)
+                    {
+                        return userToVerifyAgainst;
+                    }
                 }
             }
-            return false;
+            return new User();
         }
         private static string Sha256_hash(string value)
         {

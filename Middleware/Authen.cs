@@ -39,7 +39,11 @@ namespace CarCareTracker.Middleware
                 var appIdentity = new ClaimsIdentity("Custom");
                 var userIdentity = new List<Claim>
                 {
-                    new(ClaimTypes.Name, "admin")
+                    new(ClaimTypes.Name, "admin"),
+                    new(ClaimTypes.Role, nameof(User.IsRootUser)),
+                    new(ClaimTypes.Role, nameof(User.CanAdd)),
+                    new(ClaimTypes.Role, nameof(User.CanEdit)),
+                    new(ClaimTypes.Role, nameof(User.CanDelete))
                 };
                 appIdentity.AddClaims(userIdentity);
                 AuthenticationTicket ticket = new AuthenticationTicket(new ClaimsPrincipal(appIdentity), this.Scheme.Name);
@@ -67,13 +71,21 @@ namespace CarCareTracker.Middleware
                     } else
                     {
                         var validUser = _loginHelper.ValidateUserCredentials(new LoginModel { UserName = splitString[0], Password = splitString[1] });
-                        if (validUser)
+                        if (validUser.Id != default)
                         {
                             var appIdentity = new ClaimsIdentity("Custom");
                             var userIdentity = new List<Claim>
                             {
                                 new(ClaimTypes.Name, splitString[0])
                             };
+                            if (validUser.IsRootUser)
+                                userIdentity.Add(new(ClaimTypes.Role, nameof(User.IsRootUser)));
+                            if (validUser.CanAdd)
+                                userIdentity.Add(new(ClaimTypes.Role, nameof(User.CanAdd)));
+                            if (validUser.CanEdit)
+                                userIdentity.Add(new(ClaimTypes.Role, nameof(User.CanEdit)));
+                            if (validUser.CanDelete)
+                                userIdentity.Add(new(ClaimTypes.Role, nameof(User.CanDelete)));
                             appIdentity.AddClaims(userIdentity);
                             AuthenticationTicket ticket = new AuthenticationTicket(new ClaimsPrincipal(appIdentity), this.Scheme.Name);
                             return AuthenticateResult.Success(ticket);
@@ -92,8 +104,11 @@ namespace CarCareTracker.Middleware
                         {
                             //if cookie is expired
                             return AuthenticateResult.Fail("Expired credentials");
+                        } else if (authCookie.UserData is null)
+                        {
+                            return AuthenticateResult.Fail("Corrupted credentials");
                         }
-                        else if (authCookie.Id == default || string.IsNullOrWhiteSpace(authCookie.UserName))
+                        else if (authCookie.UserData.Id == default || string.IsNullOrWhiteSpace(authCookie.UserData.UserName))
                         {
                             return AuthenticateResult.Fail("Corrupted credentials");
                         }
@@ -102,8 +117,16 @@ namespace CarCareTracker.Middleware
                             var appIdentity = new ClaimsIdentity("Custom");
                             var userIdentity = new List<Claim>
                             {
-                                new(ClaimTypes.Name, authCookie.UserName)
-                            };
+                                new(ClaimTypes.Name, authCookie.UserData.UserName)
+                            }; 
+                            if (authCookie.UserData.IsRootUser)
+                                userIdentity.Add(new(ClaimTypes.Role, nameof(User.IsRootUser)));
+                            if (authCookie.UserData.CanAdd)
+                                userIdentity.Add(new(ClaimTypes.Role, nameof(User.CanAdd)));
+                            if (authCookie.UserData.CanEdit)
+                                userIdentity.Add(new(ClaimTypes.Role, nameof(User.CanEdit)));
+                            if (authCookie.UserData.CanDelete)
+                                userIdentity.Add(new(ClaimTypes.Role, nameof(User.CanDelete)));
                             appIdentity.AddClaims(userIdentity);
                             AuthenticationTicket ticket = new AuthenticationTicket(new ClaimsPrincipal(appIdentity), this.Scheme.Name);
                             return AuthenticateResult.Success(ticket);

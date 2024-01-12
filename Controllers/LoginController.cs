@@ -41,12 +41,11 @@ namespace CarCareTracker.Controllers
             try
             {
                 var loginIsValid = _loginHelper.ValidateUserCredentials(credentials);
-                if (loginIsValid)
+                if (loginIsValid.Id != default)
                 {
                     AuthCookie authCookie = new AuthCookie
                     {
-                        Id = 1, //this is hardcoded for now
-                        UserName = credentials.UserName,
+                        UserData = loginIsValid,
                         ExpiresOn = DateTime.Now.AddDays(credentials.IsPersistent ? 30 : 1)
                     };
                     var serializedCookie = JsonSerializer.Serialize(authCookie);

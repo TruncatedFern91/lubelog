@@ -37,6 +37,7 @@ namespace CarCareTracker.Controllers
             var vehiclesStored = _dataAccess.GetVehicles();
             return PartialView("_GarageDisplay", vehiclesStored);
         }
+        [Authorize(Roles = nameof(Models.User.IsRootUser))]
         public IActionResult Settings()
         {
             var userConfig = new UserConfig
@@ -51,17 +52,18 @@ namespace CarCareTracker.Controllers
             };
             return PartialView("_Settings", userConfig);
         }
+        [Authorize(Roles = nameof(Models.User.IsRootUser))]
         [HttpPost]
         public IActionResult WriteToSettings(UserConfig userConfig)
         {
             try
-            { 
+            {
                 if (!System.IO.File.Exists(StaticHelper.UserConfigPath))
                 {
                     //if file doesn't exist it might be because it's running on a mounted volume in docker.
                     System.IO.File.WriteAllText(StaticHelper.UserConfigPath, System.Text.Json.JsonSerializer.Serialize(new UserConfig()));
                 }
-               var configFileContents = System.IO.File.ReadAllText(StaticHelper.UserConfigPath);
+                var configFileContents = System.IO.File.ReadAllText(StaticHelper.UserConfigPath);
                 var existingUserConfig = System.Text.Json.JsonSerializer.Deserialize<UserConfig>(configFileContents);
                 if (existingUserConfig is not null)
                 {
@@ -69,7 +71,8 @@ namespace CarCareTracker.Controllers
                     userConfig.EnableAuth = existingUserConfig.EnableAuth;
                     userConfig.UserNameHash = existingUserConfig.UserNameHash;
                     userConfig.UserPasswordHash = existingUserConfig.UserPasswordHash;
-                } else
+                }
+                else
                 {
                     userConfig.EnableAuth = false;
                     userConfig.UserNameHash = string.Empty;
@@ -77,7 +80,8 @@ namespace CarCareTracker.Controllers
                 }
                 System.IO.File.WriteAllText(StaticHelper.UserConfigPath, System.Text.Json.JsonSerializer.Serialize(userConfig));
                 return Json(true);
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 _logger.LogError(ex, "Error on saving config file.");
             }
