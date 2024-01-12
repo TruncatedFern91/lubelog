@@ -22,5 +22,9 @@
                 return input;
             }
         }
+        public static string CheckedIfTrue(bool input)
+        {
+            return input ? "checked" : string.Empty;
+        }
     }
 }

@@ -40,10 +40,10 @@ namespace CarCareTracker.Middleware
                 var userIdentity = new List<Claim>
                 {
                     new(ClaimTypes.Name, "admin"),
-                    new(ClaimTypes.Role, nameof(User.IsRootUser)),
-                    new(ClaimTypes.Role, nameof(User.CanAdd)),
-                    new(ClaimTypes.Role, nameof(User.CanEdit)),
-                    new(ClaimTypes.Role, nameof(User.CanDelete))
+                    new(ClaimTypes.Role, nameof(UserModel.IsRootUser)),
+                    new(ClaimTypes.Role, nameof(UserModel.CanAdd)),
+                    new(ClaimTypes.Role, nameof(UserModel.CanEdit)),
+                    new(ClaimTypes.Role, nameof(UserModel.CanDelete))
                 };
                 appIdentity.AddClaims(userIdentity);
                 AuthenticationTicket ticket = new AuthenticationTicket(new ClaimsPrincipal(appIdentity), this.Scheme.Name);
@@ -79,13 +79,13 @@ namespace CarCareTracker.Middleware
                                 new(ClaimTypes.Name, splitString[0])
                             };
                             if (validUser.IsRootUser)
-                                userIdentity.Add(new(ClaimTypes.Role, nameof(User.IsRootUser)));
+                                userIdentity.Add(new(ClaimTypes.Role, nameof(UserModel.IsRootUser)));
                             if (validUser.CanAdd)
-                                userIdentity.Add(new(ClaimTypes.Role, nameof(User.CanAdd)));
+                                userIdentity.Add(new(ClaimTypes.Role, nameof(UserModel.CanAdd)));
                             if (validUser.CanEdit)
-                                userIdentity.Add(new(ClaimTypes.Role, nameof(User.CanEdit)));
+                                userIdentity.Add(new(ClaimTypes.Role, nameof(UserModel.CanEdit)));
                             if (validUser.CanDelete)
-                                userIdentity.Add(new(ClaimTypes.Role, nameof(User.CanDelete)));
+                                userIdentity.Add(new(ClaimTypes.Role, nameof(UserModel.CanDelete)));
                             appIdentity.AddClaims(userIdentity);
                             AuthenticationTicket ticket = new AuthenticationTicket(new ClaimsPrincipal(appIdentity), this.Scheme.Name);
                             return AuthenticateResult.Success(ticket);
@@ -120,13 +120,13 @@ namespace CarCareTracker.Middleware
                                 new(ClaimTypes.Name, authCookie.UserData.UserName)
                             }; 
                             if (authCookie.UserData.IsRootUser)
-                                userIdentity.Add(new(ClaimTypes.Role, nameof(User.IsRootUser)));
+                                userIdentity.Add(new(ClaimTypes.Role, nameof(UserModel.IsRootUser)));
                             if (authCookie.UserData.CanAdd)
-                                userIdentity.Add(new(ClaimTypes.Role, nameof(User.CanAdd)));
+                                userIdentity.Add(new(ClaimTypes.Role, nameof(UserModel.CanAdd)));
                             if (authCookie.UserData.CanEdit)
-                                userIdentity.Add(new(ClaimTypes.Role, nameof(User.CanEdit)));
+                                userIdentity.Add(new(ClaimTypes.Role, nameof(UserModel.CanEdit)));
                             if (authCookie.UserData.CanDelete)
-                                userIdentity.Add(new(ClaimTypes.Role, nameof(User.CanDelete)));
+                                userIdentity.Add(new(ClaimTypes.Role, nameof(UserModel.CanDelete)));
                             appIdentity.AddClaims(userIdentity);
                             AuthenticationTicket ticket = new AuthenticationTicket(new ClaimsPrincipal(appIdentity), this.Scheme.Name);
                             return AuthenticateResult.Success(ticket);

@@ -143,6 +143,17 @@ namespace CarCareTracker.Controllers
             var result = _userRecordDataAccess.SaveUserRecord(new UserModel() { UserName = credentials.UserName, Password = hashedPassword, IsActive = true });
             return Json(result);
         }
+        [Authorize(Roles = nameof(UserModel.IsRootUser))]
+        [HttpPost]
+        public IActionResult UpdateUser(UserModel userModel)
+        {
+            //retrieve password from db.
+            var existingUser = _userRecordDataAccess.GetUserRecordById(userModel.Id);
+            userModel.UserName = existingUser.UserName;
+            userModel.Password = existingUser.Password;
+            var result = _userRecordDataAccess.SaveUserRecord(userModel);
+            return Json(result);
+        }
         private static string Sha256_hash(string value)
         {
             StringBuilder Sb = new StringBuilder();
